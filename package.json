@@ -1,7 +1,7 @@
 {
-  "name": "opengrab",
+  "name": "praised",
   "version": "1.0.0",
-  "description": "Favicon & Open Graph image API service. Fetch favicons, OG images, and metadata from any URL.",
+  "description": "Collect and showcase customer testimonials. Beautiful widgets, simple collection forms, and a wall of love your visitors can't ignore.",
   "main": "dist/index.js",
   "scripts": {
     "build": "tsc",
@@ -11,26 +11,30 @@
     "lint": "tsc --noEmit"
   },
   "keywords": [
-    "favicon",
-    "opengraph",
-    "og-image",
-    "api",
-    "metadata"
+    "testimonials",
+    "social-proof",
+    "widget",
+    "reviews",
+    "saas"
   ],
   "license": "MIT",
   "dependencies": {
-    "cheerio": "^1.0.0",
+    "bcryptjs": "^2.4.3",
+    "better-sqlite3": "^11.7.0",
     "cors": "^2.8.5",
     "express": "^4.18.2",
     "express-rate-limit": "^7.1.4",
-    "lru-cache": "^10.1.0",
-    "sharp": "^0.33.2",
+    "jsonwebtoken": "^9.0.2",
+    "stripe": "^14.11.0",
     "uuid": "^9.0.0"
   },
   "devDependencies": {
+    "@types/bcryptjs": "^2.4.6",
+    "@types/better-sqlite3": "^7.6.8",
     "@types/cors": "^2.8.17",
     "@types/express": "^4.17.21",
     "@types/jest": "^29.5.11",
+    "@types/jsonwebtoken": "^9.0.7",
     "@types/node": "^20.10.0",
     "@types/supertest": "^6.0.3",
     "@types/uuid": "^9.0.7",

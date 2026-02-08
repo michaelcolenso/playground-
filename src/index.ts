@@ -1,49 +1,91 @@
 import express from 'express';
 import cors from 'cors';
+import rateLimit from 'express-rate-limit';
 import path from 'path';
-import apiRouter from './routes/api';
+import { config } from './config';
+import { initializeDatabase } from './database';
+import authRoutes from './auth/routes';
+import spaceRoutes from './spaces/routes';
+import testimonialRoutes from './testimonials/routes';
+import widgetRoutes from './widgets/routes';
+import billingRoutes from './billing/routes';
+import { renderLandingPage } from './pages/landing';
+import { renderDocsPage } from './pages/docs';
 
-const app = express();
-const PORT = parseInt(process.env.PORT ?? '3000', 10);
+export function createApp() {
+  const app = express();
 
-// Middleware
-app.use(cors());
-app.use(express.json());
+  // Stripe webhook needs raw body
+  app.post('/api/billing/webhook', express.raw({ type: 'application/json' }));
 
-// Static files (landing page)
-app.use(express.static(path.join(__dirname, '..', 'public')));
+  // Body parsing
+  app.use(express.json());
+  app.use(express.urlencoded({ extended: true }));
+  app.use(cors());
 
-// API routes
-app.use('/api', apiRouter);
+  // Rate limiting on API routes
+  app.use(
+    '/api',
+    rateLimit({
+      windowMs: 15 * 60 * 1000,
+      max: 300,
+      message: { error: 'Too many requests. Please try again later.' },
+      standardHeaders: true,
+      legacyHeaders: false,
+    })
+  );
 
-// Health check
-app.get('/health', (_req, res) => {
-  res.json({ status: 'ok', uptime: process.uptime() });
-});
+  // Static files
+  app.use(express.static(path.join(__dirname, '..', 'public')));
 
-// Landing page fallback
-app.get('/', (_req, res) => {
-  res.sendFile(path.join(__dirname, '..', 'public', 'index.html'));
-});
+  // Pages
+  app.get('/', (_req, res) => {
+    res.setHeader('Content-Type', 'text/html');
+    res.send(renderLandingPage());
+  });
+  app.get('/docs', (_req, res) => {
+    res.setHeader('Content-Type', 'text/html');
+    res.send(renderDocsPage());
+  });
 
-app.listen(PORT, () => {
-  console.log(`
-  ┌─────────────────────────────────────────┐
-  │                                         │
-  │   OpenGrab API v1.0                     │
-  │   Favicon & Open Graph Image Service    │
-  │                                         │
-  │   http://localhost:${PORT}                │
-  │                                         │
-  │   Endpoints:                            │
-  │   GET /api/v1/favicon?url=<url>         │
-  │   GET /api/v1/og?url=<url>              │
-  │   GET /api/v1/og/image?url=<url>        │
-  │   GET /api/v1/meta?url=<url>            │
-  │   GET /api/v1/generate?title=<title>    │
-  │                                         │
-  └─────────────────────────────────────────┘
-  `);
-});
+  // API routes
+  app.use('/api/auth', authRoutes);
+  app.use('/api/spaces', spaceRoutes);
+  app.use('/api/testimonials', testimonialRoutes);
+  app.use('/api/billing', billingRoutes);
 
-export default app;
+  // Widget routes (public, no /api prefix)
+  app.use('/widgets', widgetRoutes);
+
+  // Health check
+  app.get('/api/health', (_req, res) => {
+    res.json({ status: 'ok', version: '1.0.0', timestamp: new Date().toISOString() });
+  });
+
+  // 404
+  app.use((_req, res) => {
+    res.status(404).json({ error: 'Not found' });
+  });
+
+  return app;
+}
+
+if (require.main === module) {
+  initializeDatabase();
+
+  const app = createApp();
+  app.listen(config.port, () => {
+    console.log(`
+  ╔═══════════════════════════════════════════════╗
+  ║                                               ║
+  ║   ✨ Praised is running!                      ║
+  ║                                               ║
+  ║   Home:    http://localhost:${String(config.port).padEnd(5)}              ║
+  ║   Docs:    http://localhost:${String(config.port).padEnd(5)}/docs         ║
+  ║   API:     http://localhost:${String(config.port).padEnd(5)}/api          ║
+  ║   Widgets: http://localhost:${String(config.port).padEnd(5)}/widgets      ║
+  ║                                               ║
+  ╚═══════════════════════════════════════════════╝
+    `);
+  });
+}
