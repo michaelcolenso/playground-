@@ -6,175 +6,140 @@ export function renderDocsPage(): string {
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>API Documentation — PingBase</title>
+  <title>API Documentation — Praised</title>
   <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      background: #0B0F1A; color: #E2E8F0; line-height: 1.6;
-    }
-    .container { max-width: 860px; margin: 0 auto; padding: 40px 24px; }
-    nav { display: flex; justify-content: space-between; align-items: center; margin-bottom: 48px; }
-    .logo { font-size: 20px; font-weight: 700; display: flex; align-items: center; gap: 8px; }
-    h1 { font-size: 36px; font-weight: 800; margin-bottom: 8px; }
-    .subtitle { color: #8892A8; font-size: 16px; margin-bottom: 40px; }
-    h2 { font-size: 22px; font-weight: 700; margin: 40px 0 12px; padding-top: 20px; border-top: 1px solid #2A2F42; }
-    h2:first-of-type { border-top: none; margin-top: 0; }
-    h3 { font-size: 16px; font-weight: 600; margin: 24px 0 8px; color: #A78BFA; }
-    p { color: #8892A8; margin-bottom: 12px; }
-    code { background: #141929; padding: 2px 6px; border-radius: 4px; font-size: 13px; font-family: 'SF Mono', monospace; }
-    pre {
-      background: #0D1117; border: 1px solid #2A2F42; border-radius: 8px;
-      padding: 16px; overflow-x: auto; margin: 12px 0 20px;
-      font-family: 'SF Mono', monospace; font-size: 13px; line-height: 1.7; color: #E2E8F0;
-    }
-    .method {
-      display: inline-block; padding: 2px 8px; border-radius: 4px;
-      font-size: 12px; font-weight: 700; margin-right: 8px;
-    }
-    .method-get { background: rgba(16, 185, 129, 0.15); color: #10B981; }
-    .method-post { background: rgba(99, 102, 241, 0.15); color: #818CF8; }
-    .method-put { background: rgba(245, 158, 11, 0.15); color: #F59E0B; }
-    .method-delete { background: rgba(239, 68, 68, 0.15); color: #EF4444; }
-    .endpoint { font-family: 'SF Mono', monospace; font-size: 14px; font-weight: 500; }
-    table { width: 100%; border-collapse: collapse; margin: 12px 0 20px; }
-    th, td { text-align: left; padding: 10px 12px; border-bottom: 1px solid #2A2F42; font-size: 13px; }
-    th { color: #8892A8; font-weight: 600; font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em; }
-    td code { background: none; padding: 0; }
-    .note { background: rgba(99, 102, 241, 0.08); border-left: 3px solid #6366F1; padding: 12px 16px; border-radius: 0 8px 8px 0; margin: 16px 0; }
-    .note p { color: #C4B5FD; margin: 0; }
+    *{margin:0;padding:0;box-sizing:border-box;}
+    body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#fafbfe;color:#0f172a;line-height:1.6;}
+    .container{max-width:780px;margin:0 auto;padding:40px 24px;}
+    nav{display:flex;justify-content:space-between;align-items:center;margin-bottom:40px;}
+    .logo{font-size:20px;font-weight:800;color:#0f172a;text-decoration:none;display:flex;align-items:center;gap:6px;}
+    h1{font-size:32px;font-weight:800;margin-bottom:6px;}
+    .subtitle{color:#64748b;font-size:15px;margin-bottom:32px;}
+    h2{font-size:20px;font-weight:700;margin:36px 0 10px;padding-top:20px;border-top:1px solid #e8ecf4;}
+    h3{font-size:15px;font-weight:600;margin:20px 0 6px;color:#6366f1;}
+    p{color:#64748b;margin-bottom:10px;font-size:14px;}
+    code{background:#f1f5f9;padding:1px 5px;border-radius:4px;font-size:13px;font-family:'SF Mono',monospace;}
+    pre{background:#0f172a;border-radius:10px;padding:16px;overflow-x:auto;margin:10px 0 16px;font-family:'SF Mono',monospace;font-size:13px;line-height:1.7;color:#e2e8f0;}
+    .method{display:inline-block;padding:2px 7px;border-radius:4px;font-size:11px;font-weight:700;margin-right:6px;}
+    .m-get{background:rgba(16,185,129,.12);color:#10b981;}
+    .m-post{background:rgba(99,102,241,.12);color:#6366f1;}
+    .m-put{background:rgba(245,158,11,.12);color:#f59e0b;}
+    .m-patch{background:rgba(168,85,247,.12);color:#a855f7;}
+    .m-delete{background:rgba(239,68,68,.12);color:#ef4444;}
+    .ep{font-family:'SF Mono',monospace;font-size:14px;font-weight:500;}
+    table{width:100%;border-collapse:collapse;margin:10px 0 16px;}
+    th,td{text-align:left;padding:8px 10px;border-bottom:1px solid #e8ecf4;font-size:13px;}
+    th{color:#64748b;font-weight:600;font-size:11px;text-transform:uppercase;letter-spacing:.05em;}
+    .note{background:rgba(99,102,241,.05);border-left:3px solid #6366f1;padding:10px 14px;border-radius:0 8px 8px 0;margin:14px 0;}
+    .note p{color:#475569;margin:0;}
   </style>
 </head>
 <body>
   <div class="container">
     <nav>
-      <a href="/" class="logo" style="color:#E2E8F0;text-decoration:none;">📡 PingBase</a>
-      <a href="/" style="color:#8892A8;font-size:14px;">Back to Home</a>
+      <a href="/" class="logo">&#10024; Praised</a>
+      <a href="/" style="color:#64748b;font-size:14px;">Back to Home</a>
     </nav>
 
     <h1>API Documentation</h1>
     <p class="subtitle">Base URL: <code>${config.baseUrl}/api</code></p>
 
     <h2>Authentication</h2>
-    <p>All API endpoints require authentication via either a JWT Bearer token or an API key.</p>
-    <pre>// Using Bearer token
-Authorization: Bearer &lt;your-jwt-token&gt;
+    <p>Authenticate with a JWT token or API key:</p>
+    <pre>Authorization: Bearer &lt;jwt-token&gt;
+// or
+X-API-Key: pr_your_api_key</pre>
 
-// Using API key
-X-API-Key: pb_your_api_key_here</pre>
-
-    <h3><span class="method method-post">POST</span> <span class="endpoint">/auth/register</span></h3>
+    <h3><span class="method m-post">POST</span> <span class="ep">/auth/register</span></h3>
     <p>Create a new account.</p>
-    <pre>{
-  "name": "Jane Doe",
-  "email": "jane@example.com",
-  "password": "securepassword123"
-}</pre>
+    <pre>{ "name": "Jane", "email": "jane@example.com", "password": "securepass123" }
 
-    <h3><span class="method method-post">POST</span> <span class="endpoint">/auth/login</span></h3>
-    <p>Log in and receive a JWT token.</p>
-    <pre>{
-  "email": "jane@example.com",
-  "password": "securepassword123"
-}</pre>
+// Response: { "user": { "id", "email", "name", "plan", "apiKey" }, "token" }</pre>
 
-    <h3><span class="method method-get">GET</span> <span class="endpoint">/auth/me</span></h3>
-    <p>Get the current user's profile.</p>
+    <h3><span class="method m-post">POST</span> <span class="ep">/auth/login</span></h3>
+    <p>Get a JWT token.</p>
+    <pre>{ "email": "jane@example.com", "password": "securepass123" }</pre>
 
-    <h2>Monitors</h2>
+    <h3><span class="method m-get">GET</span> <span class="ep">/auth/me</span></h3>
+    <p>Get the authenticated user's profile.</p>
 
-    <h3><span class="method method-get">GET</span> <span class="endpoint">/monitors</span></h3>
-    <p>List all your monitors.</p>
+    <h2>Spaces</h2>
+    <p>Spaces are projects/products that contain testimonials.</p>
 
-    <h3><span class="method method-post">POST</span> <span class="endpoint">/monitors</span></h3>
-    <p>Create a new monitor.</p>
+    <h3><span class="method m-get">GET</span> <span class="ep">/spaces</span></h3>
+    <p>List all your spaces with testimonial counts.</p>
+
+    <h3><span class="method m-post">POST</span> <span class="ep">/spaces</span></h3>
+    <p>Create a new space.</p>
     <table>
       <tr><th>Field</th><th>Type</th><th>Required</th><th>Description</th></tr>
-      <tr><td><code>name</code></td><td>string</td><td>Yes</td><td>Display name for the monitor</td></tr>
-      <tr><td><code>url</code></td><td>string</td><td>Yes</td><td>URL to monitor (must be valid)</td></tr>
-      <tr><td><code>method</code></td><td>string</td><td>No</td><td>HTTP method (default: GET)</td></tr>
-      <tr><td><code>expectedStatus</code></td><td>number</td><td>No</td><td>Expected HTTP status (default: 200)</td></tr>
-      <tr><td><code>checkInterval</code></td><td>number</td><td>No</td><td>Seconds between checks (30-3600)</td></tr>
-      <tr><td><code>timeout</code></td><td>number</td><td>No</td><td>Request timeout in ms (default: 10000)</td></tr>
-      <tr><td><code>headers</code></td><td>object</td><td>No</td><td>Custom headers to send</td></tr>
-      <tr><td><code>body</code></td><td>string</td><td>No</td><td>Request body (for POST/PUT/PATCH)</td></tr>
+      <tr><td><code>name</code></td><td>string</td><td>Yes</td><td>Product name</td></tr>
+      <tr><td><code>slug</code></td><td>string</td><td>Yes</td><td>URL slug (lowercase, hyphens)</td></tr>
+      <tr><td><code>websiteUrl</code></td><td>string</td><td>No</td><td>Your product URL</td></tr>
+      <tr><td><code>brandColor</code></td><td>string</td><td>No</td><td>Hex color (default: #6366f1)</td></tr>
+      <tr><td><code>customMessage</code></td><td>string</td><td>No</td><td>Message shown on collection form</td></tr>
+      <tr><td><code>questionPrompt</code></td><td>string</td><td>No</td><td>Question asked on form</td></tr>
     </table>
-    <pre>// Example
-{
-  "name": "Production API",
-  "url": "https://api.example.com/health",
-  "checkInterval": 30,
-  "headers": { "Authorization": "Bearer secret" }
-}</pre>
 
-    <h3><span class="method method-get">GET</span> <span class="endpoint">/monitors/:id</span></h3>
-    <p>Get a monitor with its recent checks and uptime stats.</p>
+    <h3><span class="method m-put">PUT</span> <span class="ep">/spaces/:id</span></h3>
+    <p>Update a space. All fields optional.</p>
 
-    <h3><span class="method method-put">PUT</span> <span class="endpoint">/monitors/:id</span></h3>
-    <p>Update a monitor. All fields are optional.</p>
+    <h3><span class="method m-delete">DELETE</span> <span class="ep">/spaces/:id</span></h3>
+    <p>Delete a space and all its testimonials.</p>
 
-    <h3><span class="method method-delete">DELETE</span> <span class="endpoint">/monitors/:id</span></h3>
-    <p>Delete a monitor and all its check history.</p>
+    <h2>Testimonials</h2>
 
-    <h3><span class="method method-get">GET</span> <span class="endpoint">/monitors/:id/stats</span></h3>
-    <p>Get detailed uptime statistics. Query param: <code>?hours=24</code></p>
+    <h3><span class="method m-get">GET</span> <span class="ep">/testimonials/space/:spaceId</span></h3>
+    <p>List testimonials. Filter with <code>?status=pending|approved|rejected</code></p>
 
-    <h2>Incidents</h2>
-
-    <h3><span class="method method-get">GET</span> <span class="endpoint">/incidents</span></h3>
-    <p>List incidents across all monitors. Filter by <code>?status=ongoing</code> or <code>?status=resolved</code>.</p>
-
-    <h3><span class="method method-get">GET</span> <span class="endpoint">/incidents/:id</span></h3>
-    <p>Get details for a specific incident.</p>
-
-    <h2>Status Pages</h2>
-
-    <h3><span class="method method-get">GET</span> <span class="endpoint">/status-pages</span></h3>
-    <p>List your status pages.</p>
-
-    <h3><span class="method method-post">POST</span> <span class="endpoint">/status-pages</span></h3>
-    <p>Create a new status page.</p>
+    <h3><span class="method m-post">POST</span> <span class="ep">/testimonials</span></h3>
+    <p>Create a testimonial via API (auto-approved).</p>
     <pre>{
-  "name": "Acme Corp Status",
-  "slug": "acme-corp",
-  "description": "Current system status for Acme Corp.",
-  "monitorIds": ["monitor-uuid-1", "monitor-uuid-2"]
+  "spaceId": "...",
+  "authorName": "Jane Smith",
+  "authorTitle": "CEO",
+  "authorCompany": "Acme",
+  "content": "Amazing product!",
+  "rating": 5
 }</pre>
 
-    <h3><span class="method method-get">GET</span> <span class="endpoint">/status-pages/public/:slug</span></h3>
-    <p>View a public status page. Returns HTML by default, or JSON with <code>Accept: application/json</code>.</p>
+    <h3><span class="method m-patch">PATCH</span> <span class="ep">/testimonials/:id</span></h3>
+    <p>Approve, reject, or feature a testimonial.</p>
+    <pre>{ "status": "approved", "isFeatured": true }</pre>
+
+    <h3><span class="method m-delete">DELETE</span> <span class="ep">/testimonials/:id</span></h3>
+    <p>Delete a testimonial.</p>
+
+    <h2>Public Endpoints (No Auth)</h2>
+
+    <h3><span class="method m-get">GET</span> <span class="ep">/testimonials/collect/:slug</span></h3>
+    <p>Renders the public collection form. Share this link with customers!</p>
+
+    <h3><span class="method m-post">POST</span> <span class="ep">/testimonials/collect/:slug</span></h3>
+    <p>Submit a testimonial (form or JSON). Status is set to <code>pending</code>.</p>
+
+    <h2>Widget / Embed</h2>
+
+    <h3><span class="method m-get">GET</span> <span class="ep">/widgets/embed/:slug.js</span></h3>
+    <p>Embeddable JavaScript widget. Add to any page:</p>
+    <pre>&lt;script src="${config.baseUrl}/widgets/embed/your-space.js"&gt;&lt;/script&gt;</pre>
+
+    <h3><span class="method m-get">GET</span> <span class="ep">/widgets/wall/:slug</span></h3>
+    <p>Full-page wall of love. Can be used in an iframe.</p>
+
+    <h3><span class="method m-get">GET</span> <span class="ep">/widgets/api/:slug</span></h3>
+    <p>JSON endpoint for approved testimonials. Build your own display.</p>
 
     <div class="note">
-      <p>Public status pages are accessible without authentication and include the "Powered by PingBase" footer — free marketing for us, beautiful status pages for you.</p>
+      <p><strong>Embed code tip:</strong> The script auto-creates a container and renders a responsive masonry grid. It also adjusts columns based on container width. Works on any site.</p>
     </div>
 
-    <h2>Alert Channels</h2>
-
-    <h3><span class="method method-get">GET</span> <span class="endpoint">/alerts</span></h3>
-    <p>List your configured alert channels.</p>
-
-    <h3><span class="method method-post">POST</span> <span class="endpoint">/alerts</span></h3>
-    <p>Create a new alert channel.</p>
-    <pre>// Email
-{ "type": "email", "config": { "email": "ops@example.com" } }
-
-// Webhook
-{ "type": "webhook", "config": { "url": "https://example.com/hooks/ping" } }
-
-// Slack
-{ "type": "slack", "config": { "webhookUrl": "https://hooks.slack.com/services/..." } }</pre>
-
-    <h3><span class="method method-delete">DELETE</span> <span class="endpoint">/alerts/:id</span></h3>
-    <p>Delete an alert channel.</p>
-
     <h2>Billing</h2>
+    <h3><span class="method m-get">GET</span> <span class="ep">/billing</span></h3>
+    <p>Get plan info, usage, and available plans.</p>
 
-    <h3><span class="method method-get">GET</span> <span class="endpoint">/billing</span></h3>
-    <p>Get current plan info, usage, and available plans.</p>
-
-    <h3><span class="method method-post">POST</span> <span class="endpoint">/billing/checkout</span></h3>
-    <p>Create a Stripe checkout session to upgrade your plan.</p>
-    <pre>{ "plan": "pro" }  // or "business"</pre>
+    <h3><span class="method m-post">POST</span> <span class="ep">/billing/checkout</span></h3>
+    <p>Create a Stripe checkout session: <code>{ "plan": "pro" }</code></p>
   </div>
 </body>
 </html>`;

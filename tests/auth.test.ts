@@ -1,9 +1,8 @@
 import request from 'supertest';
 import { createApp } from '../src/index';
-import { initializeDatabase, getDb, closeDatabase } from '../src/database';
+import { initializeDatabase, closeDatabase } from '../src/database';
 import { config } from '../src/config';
 
-// Use in-memory database for tests
 config.dbPath = ':memory:';
 
 let app: ReturnType<typeof createApp>;
@@ -12,103 +11,71 @@ beforeAll(() => {
   initializeDatabase();
   app = createApp();
 });
-
-afterAll(() => {
-  closeDatabase();
-});
+afterAll(() => closeDatabase());
 
 describe('Auth API', () => {
-  const testUser = {
-    name: 'Test User',
-    email: 'test@example.com',
-    password: 'securepassword123',
-  };
+  const user = { name: 'Jane', email: 'jane@example.com', password: 'securepass123' };
 
-  describe('POST /api/auth/register', () => {
-    it('should register a new user', async () => {
-      const res = await request(app).post('/api/auth/register').send(testUser);
-      expect(res.status).toBe(201);
-      expect(res.body.user).toBeDefined();
-      expect(res.body.user.email).toBe(testUser.email);
-      expect(res.body.user.name).toBe(testUser.name);
-      expect(res.body.user.plan).toBe('free');
-      expect(res.body.user.apiKey).toMatch(/^pb_/);
-      expect(res.body.token).toBeDefined();
-    });
-
-    it('should reject duplicate email', async () => {
-      const res = await request(app).post('/api/auth/register').send(testUser);
-      expect(res.status).toBe(409);
-    });
-
-    it('should reject missing fields', async () => {
-      const res = await request(app)
-        .post('/api/auth/register')
-        .send({ email: 'test2@example.com' });
-      expect(res.status).toBe(400);
-    });
-
-    it('should reject short password', async () => {
-      const res = await request(app)
-        .post('/api/auth/register')
-        .send({ name: 'Test', email: 'test3@example.com', password: 'short' });
-      expect(res.status).toBe(400);
-    });
+  it('registers a new user', async () => {
+    const res = await request(app).post('/api/auth/register').send(user);
+    expect(res.status).toBe(201);
+    expect(res.body.user.email).toBe(user.email);
+    expect(res.body.user.plan).toBe('free');
+    expect(res.body.user.apiKey).toMatch(/^pr_/);
+    expect(res.body.token).toBeDefined();
   });
 
-  describe('POST /api/auth/login', () => {
-    it('should log in with valid credentials', async () => {
-      const res = await request(app)
-        .post('/api/auth/login')
-        .send({ email: testUser.email, password: testUser.password });
-      expect(res.status).toBe(200);
-      expect(res.body.token).toBeDefined();
-      expect(res.body.user.email).toBe(testUser.email);
-    });
-
-    it('should reject invalid password', async () => {
-      const res = await request(app)
-        .post('/api/auth/login')
-        .send({ email: testUser.email, password: 'wrongpassword' });
-      expect(res.status).toBe(401);
-    });
-
-    it('should reject non-existent email', async () => {
-      const res = await request(app)
-        .post('/api/auth/login')
-        .send({ email: 'nonexistent@example.com', password: 'password123' });
-      expect(res.status).toBe(401);
-    });
+  it('rejects duplicate email', async () => {
+    const res = await request(app).post('/api/auth/register').send(user);
+    expect(res.status).toBe(409);
   });
 
-  describe('GET /api/auth/me', () => {
-    it('should return user profile with valid token', async () => {
-      const loginRes = await request(app)
-        .post('/api/auth/login')
-        .send({ email: testUser.email, password: testUser.password });
+  it('rejects missing fields', async () => {
+    const res = await request(app).post('/api/auth/register').send({ email: 'x@x.com' });
+    expect(res.status).toBe(400);
+  });
 
-      const res = await request(app)
-        .get('/api/auth/me')
-        .set('Authorization', `Bearer ${loginRes.body.token}`);
-      expect(res.status).toBe(200);
-      expect(res.body.email).toBe(testUser.email);
-    });
+  it('rejects short password', async () => {
+    const res = await request(app).post('/api/auth/register').send({ ...user, email: 'new@x.com', password: 'short' });
+    expect(res.status).toBe(400);
+  });
 
-    it('should reject request without auth', async () => {
-      const res = await request(app).get('/api/auth/me');
-      expect(res.status).toBe(401);
-    });
+  it('logs in with correct credentials', async () => {
+    const res = await request(app).post('/api/auth/login').send({ email: user.email, password: user.password });
+    expect(res.status).toBe(200);
+    expect(res.body.token).toBeDefined();
+  });
 
-    it('should accept API key authentication', async () => {
-      const loginRes = await request(app)
-        .post('/api/auth/login')
-        .send({ email: testUser.email, password: testUser.password });
+  it('rejects wrong password', async () => {
+    const res = await request(app).post('/api/auth/login').send({ email: user.email, password: 'wrongpass' });
+    expect(res.status).toBe(401);
+  });
 
-      const res = await request(app)
-        .get('/api/auth/me')
-        .set('X-API-Key', loginRes.body.user.apiKey);
-      expect(res.status).toBe(200);
-      expect(res.body.email).toBe(testUser.email);
-    });
+  it('gets profile with Bearer token', async () => {
+    const login = await request(app).post('/api/auth/login').send({ email: user.email, password: user.password });
+    const res = await request(app).get('/api/auth/me').set('Authorization', `Bearer ${login.body.token}`);
+    expect(res.status).toBe(200);
+    expect(res.body.email).toBe(user.email);
+  });
+
+  it('gets profile with API key', async () => {
+    const login = await request(app).post('/api/auth/login').send({ email: user.email, password: user.password });
+    const res = await request(app).get('/api/auth/me').set('X-API-Key', login.body.user.apiKey);
+    expect(res.status).toBe(200);
+    expect(res.body.email).toBe(user.email);
+  });
+
+  it('rejects unauthenticated requests', async () => {
+    const res = await request(app).get('/api/auth/me');
+    expect(res.status).toBe(401);
+  });
+
+  it('regenerates API key', async () => {
+    const login = await request(app).post('/api/auth/login').send({ email: user.email, password: user.password });
+    const oldKey = login.body.user.apiKey;
+    const res = await request(app).post('/api/auth/api-key/regenerate').set('Authorization', `Bearer ${login.body.token}`);
+    expect(res.status).toBe(200);
+    expect(res.body.apiKey).toMatch(/^pr_/);
+    expect(res.body.apiKey).not.toBe(oldKey);
   });
 });

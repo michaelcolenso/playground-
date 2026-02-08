@@ -1,17 +1,17 @@
-# PingBase
+# Praised
 
-Uptime monitoring & beautiful status pages. Know the moment your services go down.
+Collect and showcase customer testimonials. Beautiful collection forms, one-line embeddable widgets, and a wall of love that converts visitors into customers.
 
-## What is PingBase?
+## The Product
 
-PingBase is a complete SaaS application for monitoring website and API uptime. It includes:
+Praised is a complete testimonial SaaS:
 
-- **HTTP monitoring** with configurable intervals (30s to 1hr)
-- **Beautiful public status pages** with uptime history bars
-- **Instant alerts** via email, Slack, and webhooks
-- **Incident tracking** with automatic detection and resolution
-- **REST API** for programmatic access to everything
-- **Stripe billing** with Free / Pro ($12/mo) / Business ($49/mo) tiers
+1. **Create a Space** for your product (custom branding, questions, colors)
+2. **Share the collection link** with customers — they fill out a gorgeous form
+3. **Review & approve** testimonials in your dashboard
+4. **Embed a widget** on your site with a single `<script>` tag
+
+Every embed includes a "Powered by Praised" link — free viral marketing.
 
 ## Quick Start
 
@@ -21,107 +21,109 @@ npm run build
 npm start
 ```
 
-Server runs at `http://localhost:3000` with:
-- Landing page at `/`
-- API docs at `/docs`
-- API at `/api/*`
+Open `http://localhost:3000`:
+- `/` — Landing page
+- `/docs` — API documentation
+- `/api/testimonials/collect/:slug` — Public collection form
+- `/widgets/wall/:slug` — Wall of love
+- `/widgets/embed/:slug.js` — Embeddable JS widget
 
 ## Development
 
 ```bash
-npm run dev    # watch mode with hot reload
-npm test       # run 32 tests
+npm run dev    # watch mode
+npm test       # 40 tests
 npm run lint   # type check
 ```
 
 ## Docker
 
 ```bash
-docker build -t pingbase .
-docker run -p 3000:3000 pingbase
+docker build -t praised .
+docker run -p 3000:3000 praised
 ```
 
-## API Overview
+## API
 
-All authenticated endpoints accept either:
-- `Authorization: Bearer <jwt-token>` header
-- `X-API-Key: pb_your_key` header
+Authenticate with `Authorization: Bearer <token>` or `X-API-Key: pr_...`
 
 ### Auth
 | Method | Endpoint | Description |
 |--------|----------|-------------|
-| POST | `/api/auth/register` | Create account |
+| POST | `/api/auth/register` | Create account, get JWT + API key |
 | POST | `/api/auth/login` | Log in, get JWT |
 | GET | `/api/auth/me` | Get profile |
 
-### Monitors
+### Spaces
 | Method | Endpoint | Description |
 |--------|----------|-------------|
-| GET | `/api/monitors` | List monitors |
-| POST | `/api/monitors` | Create monitor |
-| GET | `/api/monitors/:id` | Get monitor + checks + uptime |
-| PUT | `/api/monitors/:id` | Update monitor |
-| DELETE | `/api/monitors/:id` | Delete monitor |
-| GET | `/api/monitors/:id/stats` | Uptime statistics |
+| GET | `/api/spaces` | List spaces + testimonial counts |
+| POST | `/api/spaces` | Create space (name, slug, brandColor) |
+| GET | `/api/spaces/:id` | Get space |
+| PUT | `/api/spaces/:id` | Update space |
+| DELETE | `/api/spaces/:id` | Delete space + all testimonials |
 
-### Status Pages
+### Testimonials
 | Method | Endpoint | Description |
 |--------|----------|-------------|
-| GET | `/api/status-pages` | List your status pages |
-| POST | `/api/status-pages` | Create status page |
-| GET | `/api/status-pages/public/:slug` | View public status page (HTML or JSON) |
-| PUT | `/api/status-pages/:id` | Update status page |
-| DELETE | `/api/status-pages/:id` | Delete status page |
+| GET | `/api/testimonials/space/:id` | List (filter with ?status=) |
+| POST | `/api/testimonials` | Create via API (auto-approved) |
+| PATCH | `/api/testimonials/:id` | Approve/reject/feature |
+| DELETE | `/api/testimonials/:id` | Delete |
 
-### Incidents & Alerts
+### Public (No Auth)
 | Method | Endpoint | Description |
 |--------|----------|-------------|
-| GET | `/api/incidents` | List incidents |
-| GET | `/api/alerts` | List alert channels |
-| POST | `/api/alerts` | Create alert channel |
-| DELETE | `/api/alerts/:id` | Delete alert channel |
+| GET | `/api/testimonials/collect/:slug` | Renders collection form |
+| POST | `/api/testimonials/collect/:slug` | Submit testimonial (pending review) |
+| GET | `/widgets/embed/:slug.js` | Embeddable JS widget |
+| GET | `/widgets/wall/:slug` | Full-page wall of love |
+| GET | `/widgets/api/:slug` | JSON API for approved testimonials |
 
 ### Billing
 | Method | Endpoint | Description |
 |--------|----------|-------------|
-| GET | `/api/billing` | Get plan info + usage |
-| POST | `/api/billing/checkout` | Create Stripe checkout session |
+| GET | `/api/billing` | Plan info + usage |
+| POST | `/api/billing/checkout` | Stripe checkout session |
+
+## Embed Widget
+
+Add testimonials to any website with one line:
+
+```html
+<script src="https://your-domain.com/widgets/embed/your-space.js"></script>
+```
+
+The widget renders a responsive masonry grid, adjusts columns to container width, and includes star ratings + author avatars.
 
 ## Environment Variables
 
 ```
 PORT=3000
-JWT_SECRET=your-secret-here
-DB_PATH=./data/pingbase.db
+JWT_SECRET=change-me-in-production
+DB_PATH=./data/praised.db
 BASE_URL=https://your-domain.com
 
-# Stripe (optional — billing works without it)
+# Stripe (optional)
 STRIPE_SECRET_KEY=sk_...
 STRIPE_WEBHOOK_SECRET=whsec_...
 STRIPE_PRICE_PRO_MONTHLY=price_...
 STRIPE_PRICE_BUSINESS_MONTHLY=price_...
-
-# Email alerts (optional — logs to console without it)
-SMTP_HOST=smtp.resend.com
-SMTP_PORT=587
-SMTP_USER=resend
-SMTP_PASS=re_...
-EMAIL_FROM=alerts@pingbase.io
 ```
 
 ## Architecture
 
-- **Express + TypeScript** — Fast, type-safe API server
-- **SQLite (better-sqlite3)** — Zero-config database, WAL mode for performance
-- **Background monitoring engine** — Runs checks concurrently in batches of 10
-- **Server-rendered HTML** — Landing page, docs, and status pages with no frontend build step
-- **JWT + API key auth** — Dual authentication for web and programmatic access
-- **Stripe integration** — Subscription billing with webhook handling
+- **Express + TypeScript** — type-safe API server
+- **SQLite (better-sqlite3)** — zero-config, WAL mode
+- **Server-rendered HTML** — landing page, forms, widgets, docs (no frontend build step)
+- **JWT + API key** dual auth
+- **Stripe** subscription billing with webhooks
+- **Embeddable widget** — self-contained JS that creates its own DOM
 
-## Pricing Model
+## Pricing
 
-| Plan | Price | Monitors | Interval | Features |
-|------|-------|----------|----------|----------|
-| Free | $0/mo | 3 | 5 min | Email alerts, 1 status page |
-| Pro | $12/mo | 25 | 30 sec | Slack/webhook alerts, unlimited status pages, API |
-| Business | $49/mo | 100 | 30 sec | Custom domains, team members, priority support |
+| Plan | Price | Spaces | Testimonials | Key Features |
+|------|-------|--------|-------------|-------------|
+| Free | $0/mo | 1 | 15 | Widget, collection form, approval workflow |
+| Pro | $19/mo | 10 | Unlimited | Remove branding, custom colors, API, priority support |
+| Business | $49/mo | Unlimited | Unlimited | Video testimonials, custom CSS, webhooks, team members |

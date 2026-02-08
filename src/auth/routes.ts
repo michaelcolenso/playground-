@@ -15,7 +15,6 @@ router.post('/register', (req: Request, res: Response): void => {
     res.status(400).json({ error: 'Email, password, and name are required' });
     return;
   }
-
   if (password.length < 8) {
     res.status(400).json({ error: 'Password must be at least 8 characters' });
     return;
@@ -30,15 +29,13 @@ router.post('/register', (req: Request, res: Response): void => {
 
   const id = uuidv4();
   const passwordHash = bcrypt.hashSync(password, 10);
-  const apiKey = `pb_${uuidv4().replace(/-/g, '')}`;
+  const apiKey = `pr_${uuidv4().replace(/-/g, '')}`;
 
   db.prepare(
     'INSERT INTO users (id, email, password_hash, name, api_key) VALUES (?, ?, ?, ?, ?)'
   ).run(id, email, passwordHash, name, apiKey);
 
-  const token = jwt.sign({ userId: id }, config.jwtSecret, {
-    expiresIn: config.jwtExpiresIn as any,
-  });
+  const token = jwt.sign({ userId: id }, config.jwtSecret, { expiresIn: '7d' } as any);
 
   res.status(201).json({
     user: { id, email, name, plan: 'free', apiKey },
@@ -48,7 +45,6 @@ router.post('/register', (req: Request, res: Response): void => {
 
 router.post('/login', (req: Request, res: Response): void => {
   const { email, password } = req.body;
-
   if (!email || !password) {
     res.status(400).json({ error: 'Email and password are required' });
     return;
@@ -57,27 +53,17 @@ router.post('/login', (req: Request, res: Response): void => {
   const db = getDb();
   const user = db
     .prepare('SELECT id, email, name, password_hash, plan, api_key FROM users WHERE email = ?')
-    .get(email) as
-    | { id: string; email: string; name: string; password_hash: string; plan: string; api_key: string }
-    | undefined;
+    .get(email) as any;
 
   if (!user || !bcrypt.compareSync(password, user.password_hash)) {
     res.status(401).json({ error: 'Invalid email or password' });
     return;
   }
 
-  const token = jwt.sign({ userId: user.id }, config.jwtSecret, {
-    expiresIn: config.jwtExpiresIn as any,
-  });
+  const token = jwt.sign({ userId: user.id }, config.jwtSecret, { expiresIn: '7d' } as any);
 
   res.json({
-    user: {
-      id: user.id,
-      email: user.email,
-      name: user.name,
-      plan: user.plan,
-      apiKey: user.api_key,
-    },
+    user: { id: user.id, email: user.email, name: user.name, plan: user.plan, apiKey: user.api_key },
     token,
   });
 });
@@ -86,14 +72,7 @@ router.get('/me', authenticateToken, (req: AuthRequest, res: Response): void => 
   const db = getDb();
   const user = db
     .prepare('SELECT id, email, name, plan, api_key, created_at FROM users WHERE id = ?')
-    .get(req.userId!) as {
-    id: string;
-    email: string;
-    name: string;
-    plan: string;
-    api_key: string;
-    created_at: string;
-  };
+    .get(req.userId!) as any;
 
   res.json({
     id: user.id,
@@ -107,8 +86,8 @@ router.get('/me', authenticateToken, (req: AuthRequest, res: Response): void => 
 
 router.post('/api-key/regenerate', authenticateToken, (req: AuthRequest, res: Response): void => {
   const db = getDb();
-  const newApiKey = `pb_${uuidv4().replace(/-/g, '')}`;
-  db.prepare('UPDATE users SET api_key = ?, updated_at = datetime(\'now\') WHERE id = ?').run(
+  const newApiKey = `pr_${uuidv4().replace(/-/g, '')}`;
+  db.prepare("UPDATE users SET api_key = ?, updated_at = datetime('now') WHERE id = ?").run(
     newApiKey,
     req.userId!
   );

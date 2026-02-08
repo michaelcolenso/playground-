@@ -13,11 +13,8 @@ interface JwtPayload {
 }
 
 export function authenticateToken(req: AuthRequest, res: Response, next: NextFunction): void {
-  // Check for Bearer token
   const authHeader = req.headers.authorization;
-  const token = authHeader && authHeader.startsWith('Bearer ') ? authHeader.slice(7) : null;
-
-  // Check for API key
+  const token = authHeader?.startsWith('Bearer ') ? authHeader.slice(7) : null;
   const apiKey = req.headers['x-api-key'] as string | undefined;
 
   if (apiKey) {
