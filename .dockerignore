@@ -4,6 +4,5 @@ dist
 *.md
 tests
 jest.config.js
-tsconfig.json
 .env
 data
