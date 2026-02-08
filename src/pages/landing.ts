@@ -10,6 +10,11 @@ export function renderLandingPage(): string {
   <meta name="description" content="Turn happy customers into your best marketing. Collect testimonials with a simple link, showcase them with a beautiful embeddable widget.">
   <meta property="og:title" content="Praised — Customer Testimonials Made Easy">
   <meta property="og:description" content="Collect, manage, and showcase customer testimonials. Beautiful widgets that convert.">
+  <meta property="og:image" content="${config.baseUrl}/og-image.svg">
+  <meta property="og:image:width" content="1280">
+  <meta property="og:image:height" content="640">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="${config.baseUrl}/og-image.svg">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✨</text></svg>">
   <style>
     *{margin:0;padding:0;box-sizing:border-box;}
