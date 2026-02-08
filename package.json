@@ -1,37 +1,45 @@
 {
-  "name": "opengrab",
+  "name": "pingbase",
   "version": "1.0.0",
-  "description": "Favicon & Open Graph image API service. Fetch favicons, OG images, and metadata from any URL.",
+  "description": "Uptime monitoring & beautiful status pages. Know the moment your services go down.",
   "main": "dist/index.js",
   "scripts": {
     "build": "tsc",
     "start": "node dist/index.js",
     "dev": "tsx watch src/index.ts",
     "test": "jest --forceExit",
-    "lint": "tsc --noEmit"
+    "lint": "tsc --noEmit",
+    "migrate": "node dist/database.js"
   },
   "keywords": [
-    "favicon",
-    "opengraph",
-    "og-image",
-    "api",
-    "metadata"
+    "uptime",
+    "monitoring",
+    "status-page",
+    "ping",
+    "health-check",
+    "saas"
   ],
   "license": "MIT",
   "dependencies": {
-    "cheerio": "^1.0.0",
+    "bcryptjs": "^2.4.3",
+    "better-sqlite3": "^11.7.0",
     "cors": "^2.8.5",
     "express": "^4.18.2",
     "express-rate-limit": "^7.1.4",
-    "lru-cache": "^10.1.0",
-    "sharp": "^0.33.2",
+    "jsonwebtoken": "^9.0.2",
+    "nodemailer": "^6.9.8",
+    "stripe": "^14.11.0",
     "uuid": "^9.0.0"
   },
   "devDependencies": {
+    "@types/bcryptjs": "^2.4.6",
+    "@types/better-sqlite3": "^7.6.8",
     "@types/cors": "^2.8.17",
     "@types/express": "^4.17.21",
     "@types/jest": "^29.5.11",
+    "@types/jsonwebtoken": "^9.0.7",
     "@types/node": "^20.10.0",
+    "@types/nodemailer": "^6.4.14",
     "@types/supertest": "^6.0.3",
     "@types/uuid": "^9.0.7",
     "jest": "^29.7.0",
