@@ -174,7 +174,10 @@ router.post('/collect/:slug', (req: Request, res: Response): void => {
       .prepare('SELECT COUNT(*) as count FROM testimonials WHERE space_id = ?')
       .get(space.id) as { count: number };
     if (count.count >= limit) {
-      res.status(403).json({ error: 'This space has reached its testimonial limit.' });
+      res.status(403).json({
+        error: `Testimonial limit reached (${limit}). The space owner needs to upgrade their plan.`,
+        upgradeUrl: `${config.baseUrl}/dashboard#billing`,
+      });
       return;
     }
   }

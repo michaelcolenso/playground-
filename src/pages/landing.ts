@@ -135,8 +135,8 @@ export function renderLandingPage(): string {
       <a href="#how">How It Works</a>
       <a href="#pricing">Pricing</a>
       <a href="/docs">API</a>
-      <a href="/api/auth/login" class="btn btn-ghost">Log In</a>
-      <a href="/api/auth/register" class="btn btn-primary">Get Started Free</a>
+      <a href="/login" class="btn btn-ghost">Log In</a>
+      <a href="/register" class="btn btn-primary">Get Started Free</a>
     </div>
   </nav>
 
@@ -145,7 +145,7 @@ export function renderLandingPage(): string {
     <h1>Turn happy customers into your <em>best marketing</em></h1>
     <p>Collect testimonials with a simple link. Showcase them with a gorgeous embeddable widget. Watch your conversion rate climb.</p>
     <div class="hero-actions">
-      <a href="/api/auth/register" class="btn btn-primary" style="padding:14px 28px;font-size:16px;">Start Collecting — Free</a>
+      <a href="/register" class="btn btn-primary" style="padding:14px 28px;font-size:16px;">Start Collecting — Free</a>
       <a href="#demo" class="btn btn-outline" style="padding:14px 28px;font-size:16px;">See Demo</a>
     </div>
     <div class="social-proof">
@@ -235,43 +235,40 @@ export function renderLandingPage(): string {
         <div class="price-desc">Perfect for getting started.</div>
         <ul class="price-list">
           <li>1 space</li>
-          <li>15 testimonials</li>
+          <li>${config.freeTestimonials} testimonials</li>
           <li>Embeddable widget</li>
           <li>Collection form</li>
           <li>Approval workflow</li>
         </ul>
-        <a href="/api/auth/register" class="btn btn-outline">Get Started</a>
+        <a href="/register" class="btn btn-outline">Get Started</a>
       </div>
       <div class="price-card pop">
         <div class="pop-badge">Most Popular</div>
         <h3>Pro</h3>
-        <div class="price-amt">$19<span>/mo</span></div>
-        <div class="price-desc">For growing businesses.</div>
+        <div class="price-amt">$${config.proPriceMonthly}<span>/mo</span></div>
+        <div class="price-desc">For growing businesses. <strong>$${config.proPriceAnnual}/mo</strong> billed annually.</div>
         <ul class="price-list">
-          <li>10 spaces</li>
+          <li>${config.proSpaces} spaces</li>
           <li>Unlimited testimonials</li>
-          <li>All widget styles</li>
           <li>Remove Praised branding</li>
-          <li>Custom colors & fonts</li>
-          <li>Priority support</li>
+          <li>Custom colors</li>
           <li>API access</li>
+          <li>Priority support</li>
         </ul>
-        <a href="/api/auth/register" class="btn btn-primary">Start Pro Trial</a>
+        <a href="/register" class="btn btn-primary">Get Started</a>
       </div>
       <div class="price-card">
         <h3>Business</h3>
-        <div class="price-amt">$49<span>/mo</span></div>
-        <div class="price-desc">For teams and agencies.</div>
+        <div class="price-amt">$${config.businessPriceMonthly}<span>/mo</span></div>
+        <div class="price-desc">For teams and agencies. <strong>$${config.businessPriceAnnual}/mo</strong> billed annually.</div>
         <ul class="price-list">
           <li>Unlimited spaces</li>
           <li>Unlimited testimonials</li>
           <li>All Pro features</li>
-          <li>Video testimonials</li>
           <li>Custom CSS</li>
-          <li>Webhook integrations</li>
-          <li>Team members</li>
+          <li>Priority support</li>
         </ul>
-        <a href="/api/auth/register" class="btn btn-outline">Contact Us</a>
+        <a href="/register" class="btn btn-outline">Get Started</a>
       </div>
     </div>
   </section>
@@ -279,7 +276,7 @@ export function renderLandingPage(): string {
   <section class="cta">
     <h2>Your customers love you. Show it.</h2>
     <p>Start collecting testimonials in under 2 minutes. Free forever plan available.</p>
-    <a href="/api/auth/register" class="btn btn-primary" style="padding:14px 32px;font-size:16px;">Start Collecting — Free</a>
+    <a href="/register" class="btn btn-primary" style="padding:14px 32px;font-size:16px;">Start Collecting — Free</a>
   </section>
 
   <footer>&copy; ${new Date().getFullYear()} Praised. Social proof that converts.</footer>

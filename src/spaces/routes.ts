@@ -82,6 +82,8 @@ router.post('/', authenticateToken, (req: AuthRequest, res: Response): void => {
     if (count.count >= limit) {
       res.status(403).json({
         error: `Space limit reached (${limit}). Upgrade your plan to create more spaces.`,
+        upgradeUrl: `${config.baseUrl}/dashboard#billing`,
+        currentPlan: req.userPlan || 'free',
       });
       return;
     }

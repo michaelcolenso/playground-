@@ -11,6 +11,8 @@ import widgetRoutes from './widgets/routes';
 import billingRoutes from './billing/routes';
 import { renderLandingPage } from './pages/landing';
 import { renderDocsPage } from './pages/docs';
+import { renderRegisterPage, renderLoginPage } from './pages/auth';
+import { renderDashboardPage } from './pages/dashboard';
 
 export function createApp() {
   const app = express();
@@ -46,6 +48,18 @@ export function createApp() {
   app.get('/docs', (_req, res) => {
     res.setHeader('Content-Type', 'text/html');
     res.send(renderDocsPage());
+  });
+  app.get('/register', (_req, res) => {
+    res.setHeader('Content-Type', 'text/html');
+    res.send(renderRegisterPage());
+  });
+  app.get('/login', (_req, res) => {
+    res.setHeader('Content-Type', 'text/html');
+    res.send(renderLoginPage());
+  });
+  app.get('/dashboard', (_req, res) => {
+    res.setHeader('Content-Type', 'text/html');
+    res.send(renderDashboardPage());
   });
 
   // API routes
